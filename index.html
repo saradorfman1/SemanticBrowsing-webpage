@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Semantic Browsing: Controllable Diversity for Image Generation</title>
+    <meta
+      name="description"
+      content="Project page for Semantic Browsing, a method for controllable semantic diversity in image generation."
+    >
+    <meta property="og:title" content="Semantic Browsing">
+    <meta property="og:description" content="Controllable Diversity for Image Generation">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="assets/og-image.png?v=2">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top">Semantic Browsing</a>
+      <nav aria-label="Project sections">
+        <a href="#abstract">Abstract</a>
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="#citation">Citation</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-text">
+          <h1><span>Semantic Browsing</span>: Controllable Diversity for Image Generation</h1>
+          <p class="venue-line">ECCV 2026</p>
+          <p class="authors">
+            <a href="https://scholar.google.com/citations?user=QWY7OskAAAAJ&amp;hl=iw">Sara Dorfman*</a>,
+            <a href="#" aria-label="Maya Vishnevsky profile placeholder">Maya Vishnevsky*</a>,
+            <a href="https://omer11a.github.io/">Omer Dahary</a>,
+            <a href="https://orpatashnik.github.io/">Or Patashnik</a>,
+            <a href="https://danielcohenor.com/">Daniel Cohen-Or</a>
+          </p>
+          <p class="affiliation">Tel Aviv University</p>
+          <p class="equal">* Equal contribution</p>
+          <div class="actions" aria-label="Project links">
+            <a class="button" href="#" aria-disabled="true">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M6 4h8l4 4v12H6z"></path>
+                <path d="M14 4v4h4"></path>
+                <path d="M9 15h6"></path>
+                <path d="M9 18h4"></path>
+              </svg>
+              arXiv
+            </a>
+            <a class="button" href="#" aria-disabled="true">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="m9 18-6-6 6-6"></path>
+                <path d="m15 6 6 6-6 6"></path>
+              </svg>
+              Code coming soon
+            </a>
+          </div>
+        </div>
+        <figure class="hero-video video-frame">
+          <div class="video-crop">
+            <video controls preload="metadata" playsinline>
+              <source src="assets/interactive-browsing.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </figure>
+      </section>
+
+      <section class="tldr-section" aria-label="TL;DR">
+        <div class="tldr">
+          <h2>TL;DR</h2>
+          <p>
+            <span class="text-accent">Semantic Browsing</span> introduces an
+            agentic workflow that turns a single text prompt into a
+            structured, <span class="text-accent">browsable gallery</span> of
+            diverse image interpretations, where each variation
+            reflects meaningful and controllable <span class="text-accent">semantic</span> choices
+            rather than stochastic sampling.
+          </p>
+        </div>
+      </section>
+
+      <section id="abstract" class="section abstract-section">
+        <div class="abstract-copy">
+          <h2>Abstract</h2>
+          <p>
+            Modern text-to-image models produce high-fidelity images that closely follow prompts, but
+            repeated sampling often collapses toward a single semantic interpretation.
+            <span class="text-accent">Semantic Browsing</span> introduces controllable diversity: users explore generated images through
+            meaningful, interpretable variations rather than incidental stochastic changes. The method
+            shifts diversity to the text level, using a multi-agent workflow to expand prompts into
+            structured scene representations and to identify plausible under-specified axes of
+            variation. Each generated branch corresponds to a specific semantic decision, creating a
+            navigable design space while preserving the original prompt intent.
+          </p>
+        </div>
+        <figure class="teaser-figure">
+          <img
+            src="assets/teaser-animal-poster.png"
+            alt="Structured gallery of lion and tiger image variations generated from a single prompt."
+          >
+          <figcaption>
+            <strong>Semantic Browsing for Image Generation.</strong>
+            From a single text prompt <em>A poster featuring animals</em>,
+            the system produces a structured gallery of images that explore different meaningful
+            interpretations of the same scene. Rather than random variations, each image reflects a
+            distinct, coherent semantic choice (e.g., changes in character, composition, or style)
+            allowing users to browse a space of alternatives in a deliberate and interpretable way.
+            In this visualization, the leftmost image serves as the root for the four variations in the
+            center. The variation highlighted with a purple border is then selected as the specific
+            parent for its four children displayed on the right.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="method" class="section visual">
+        <div class="section-heading">
+          <p class="kicker">Overview</p>
+          <h2>Semantic diversity through structured scene refinement</h2>
+        </div>
+        <div class="method-notes">
+          <h3>Structured scene-tree expansion</h3>
+          <ul>
+            <li><span aria-hidden="true">🧾</span><span>We represent each fully specified scene as a structured JSON, capturing objects, attributes, interactions, and global scene properties.</span></li>
+            <li><span aria-hidden="true">🌳</span><span>The method builds a rooted tree of JSON scenes: each node is a complete scene interpretation and each edge applies one semantic constraint.</span></li>
+            <li><span aria-hidden="true">🔁</span><span>The tree grows iteratively by invoking the agentic workflow at a selected node, producing children that preserve the branch history.</span></li>
+          </ul>
+        </div>
+        <figure>
+          <img
+            src="assets/method-browsing-process.png"
+            alt="Interactive semantic browsing process showing branching choices and selected semantic refinements."
+          >
+          <figcaption>
+            <strong>Example of semantic browsing produced by our method.</strong>
+            Starting from an initial scene interpretation inferred from the user prompt, the method
+            explores alternative realizations by committing explicit semantic constraints at each step.
+            Each branching point corresponds to alternative realizations of a single semantic aspect,
+            while previously fixed constraints are preserved. Branching points also include an option
+            to preserve the current value of the selected aspect, allowing exploration to continue
+            along other semantic dimensions. Every node is a fully specified, renderable scene;
+            <em>preserve</em> branches propagate these states to the final level, ensuring the leaf
+            nodes contain all generated representations ready for rendering.
+          </figcaption>
+        </figure>
+        <div class="section-heading method-subheading">
+          <p class="kicker">How to expand the tree?</p>
+        </div>
+        <div class="method-notes method-notes-compact">
+          <h3>Tree requirements</h3>
+          <ul>
+            <li><span aria-hidden="true">📐</span><span><strong>Semantic structuring:</strong> siblings branch along one shared semantic aspect, such as interaction, composition, or style.</span></li>
+            <li><span aria-hidden="true">🌈</span><span><strong>Heterogeneity:</strong> each child realizes that aspect in a distinct way, creating meaningful conceptual spread.</span></li>
+            <li><span aria-hidden="true">✅</span><span><strong>Plausibility:</strong> every refinement remains consistent with the original prompt and with constraints already fixed along its path.</span></li>
+          </ul>
+        </div>
+        <div class="method-notes">
+          <h3>Multi-agent workflow</h3>
+          <ul>
+            <li><span aria-hidden="true">🔎</span><span><strong>Context Analyst:</strong> separates fixed constraints from mutable scene details, defining a plausible search space for modification.</span></li>
+            <li><span aria-hidden="true">💡</span><span><strong>Brainstormer:</strong> groups mutable details into high-level semantic aspects, encouraging structured branches rather than isolated edits.</span></li>
+            <li><span aria-hidden="true">🎯</span><span><strong>Decision Maker:</strong> selects one impactful aspect and instantiates it into diverse alternative constraints for sibling nodes.</span></li>
+            <li><span aria-hidden="true">🛡️</span><span><strong>Critic:</strong> validates and refines the proposed constraints so they remain faithful, non-contradictory, and clearly distinct.</span></li>
+          </ul>
+        </div>
+        <figure>
+          <img
+            src="assets/method-agent-workflow.png"
+            alt="Multi-agent workflow for proposing and refining semantic scene variations."
+          >
+          <figcaption>
+            <strong>Multi-Agent workflow guiding an iterative JSON generation process.</strong>
+            The pipeline takes the current JSON configuration and a history of constraints derived
+            from previous modifications (including the user prompt) as inputs. A sequence of agents -
+            <em>Context Analyst</em>, <em>Brainstormer</em>, <em>Decision Maker</em>, and
+            <em>Critic</em> - analyzes these inputs to select an aspect to modify and formulate
+            specific instructions. The JSON Refiner then translates these instructions into an updated
+            JSON configuration, and the new modifications are added to the constraint set for
+            subsequent iterations.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="results" class="section results">
+        <div class="section-heading">
+          <p class="kicker">Results</p>
+          <h2>Galleries of semantic alternatives</h2>
+        </div>
+        <p class="section-copy">
+          All images shown are derived from a single initial scene. The outer gray groupings organize
+          results that share a direct common ancestor scene. Inside, the colored boxes distinguish
+          sibling branches&mdash;parallel variations that share that same parent but differ from one another
+          by a single semantic aspect. This demonstrates how our method introduces meaningful
+          diversity while preserving the coherence of the original user prompt.
+        </p>
+        <div class="result-carousel" data-carousel>
+          <div class="carousel-controls" aria-label="Result gallery controls">
+            <button class="carousel-button" type="button" data-carousel-prev aria-label="Previous result">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
+            <p class="carousel-counter" data-carousel-counter>1 / 10</p>
+            <button class="carousel-button" type="button" data-carousel-next aria-label="Next result">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="m9 18 6-6-6-6"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="carousel-viewport">
+            <figure class="result-gallery is-active" data-carousel-slide>
+              <figcaption class="prompt">Prompt: A group of people doing yoga.</figcaption>
+              <img src="assets/results-fibo-yoga.png" alt="Semantic Browsing result gallery for the prompt: A group of people doing yoga.">
+            </figure>
+            <figure class="result-gallery" data-carousel-slide>
+              <figcaption class="prompt">Prompt: A cat and a goldfish bowl.</figcaption>
+              <img src="assets/results-fibo-cat-goldfish.png" alt="Semantic Browsing result gallery for the prompt: A cat and a goldfish bowl.">
+            </figure>
+            <figure class="result-gallery" data-carousel-slide>
+              <figcaption class="prompt">Prompt: A robot and a scarecrow in a field.</figcaption>
+              <img src="assets/results-scarecrow-robot.png" alt="Semantic Browsing result gallery for the prompt: A robot and a scarecrow in a field.">
+            </figure>
+            <figure class="result-gallery" data-carousel-slide>
+              <figcaption class="prompt">Prompt: A birthday cake.</figcaption>
+              <img src="assets/results-birthday-cake.png" alt="Semantic Browsing result gallery for the prompt: A birthday cake.">
+            </figure>
+            <figure class="result-gallery" data-carousel-slide>
+              <figcaption class="prompt">Prompt: A boat passes by waterfront houses flanked by trees.</figcaption>
+              <img src="assets/results-boat.png" alt="Semantic Browsing result gallery for the prompt: A boat passes by waterfront houses flanked by trees.">
+            </figure>
+            <figure class="result-gallery" data-carousel-slide>
+              <figcaption class="prompt">Prompt: A doll on a shelf.</figcaption>
+              <img src="assets/results-doll-shelf.png" alt="Semantic Browsing result gallery for the prompt: A doll on a shelf.">
+            </figure>
+            <figure class="result-gallery" data-carousel-slide>
+              <figcaption class="prompt">Prompt: A man in uniform riding a horse.</figcaption>
+              <img src="assets/results-man-riding-horse.png" alt="Semantic Browsing result gallery for the prompt: A man in uniform riding a horse.">
+            </figure>
+            <figure class="result-gallery" data-carousel-slide>
+              <figcaption class="prompt">Prompt: A family of monkeys.</figcaption>
+              <img src="assets/results-monkey-family.png" alt="Semantic Browsing result gallery for the prompt: A family of monkeys.">
+            </figure>
+            <figure class="result-gallery" data-carousel-slide>
+              <figcaption class="prompt">Prompt: A group of people riding on a group of elephants.</figcaption>
+              <img src="assets/results-people-elephants.png" alt="Semantic Browsing result gallery for the prompt: A group of people riding on a group of elephants.">
+            </figure>
+            <figure class="result-gallery" data-carousel-slide>
+              <figcaption class="prompt">Prompt: A group of people at a sports event.</figcaption>
+              <img src="assets/results-people-sports-event.png" alt="Semantic Browsing result gallery for the prompt: A group of people at a sports event.">
+            </figure>
+          </div>
+          <div class="carousel-dots" data-carousel-dots aria-label="Choose result"></div>
+        </div>
+        <div class="result-set">
+          <div class="subsection-heading">
+            <h3>Model-Agnostic Generation</h3>
+            <p>
+              Qualitative results demonstrating the transferability of our framework to the FLUX.2
+              architecture. By utilizing our agentic flow solely for scene generation and FLUX.2 as
+              the rendering backbone, we achieve consistent structured diversity.
+            </p>
+          </div>
+          <figure class="result-gallery">
+            <figcaption class="prompt">Prompt: A dancer performing a dance.</figcaption>
+            <img
+              src="assets/results-flux-dancer.png"
+              alt="Semantic Browsing FLUX.2 result gallery for the prompt: A dancer performing a dance."
+            >
+          </figure>
+          <figure class="result-gallery">
+            <figcaption class="prompt">Prompt: A red fox and a white fox playing a video game.</figcaption>
+            <img
+              src="assets/results-flux-foxes.png"
+              alt="Semantic Browsing FLUX.2 result gallery for the prompt: A red fox and a white fox playing a video game."
+            >
+          </figure>
+        </div>
+      </section>
+
+      <section id="citation" class="section citation">
+        <div class="section-heading">
+          <p class="kicker">Citation</p>
+          <h2>BibTeX</h2>
+        </div>
+        <pre><code>@article{dorfman2026semanticbrowsing,
+  title   = {Semantic Browsing: Controllable Diversity for Image Generation},
+  author  = {Dorfman, Sara and Vishnevsky, Maya and Dahary, Omer and Patashnik, Or and Cohen-Or, Daniel},
+  journal = {arXiv preprint},
+  year    = {2026}
+}</code></pre>
+      </section>
+    </main>
+
+    <footer>
+      <p>Semantic Browsing: Controllable Diversity for Image Generation</p>
+      <a href="#top">Back to top</a>
+    </footer>
+    <script>
+      document.querySelectorAll("[data-carousel]").forEach((carousel) => {
+        const slides = Array.from(carousel.querySelectorAll("[data-carousel-slide]"));
+        const counter = carousel.querySelector("[data-carousel-counter]");
+        const dotsRoot = carousel.querySelector("[data-carousel-dots]");
+        let activeIndex = 0;
+
+        const dots = slides.map((_, index) => {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "carousel-dot";
+          dot.setAttribute("aria-label", `Show result ${index + 1}`);
+          dot.addEventListener("click", () => setActive(index));
+          dotsRoot.append(dot);
+          return dot;
+        });
+
+        function setActive(index) {
+          activeIndex = (index + slides.length) % slides.length;
+          slides.forEach((slide, slideIndex) => {
+            const isActive = slideIndex === activeIndex;
+            slide.classList.toggle("is-active", isActive);
+            slide.toggleAttribute("aria-hidden", !isActive);
+          });
+          dots.forEach((dot, dotIndex) => {
+            const isActive = dotIndex === activeIndex;
+            dot.classList.toggle("is-active", isActive);
+            dot.setAttribute("aria-current", isActive ? "true" : "false");
+          });
+          counter.textContent = `${activeIndex + 1} / ${slides.length}`;
+        }
+
+        carousel.querySelector("[data-carousel-prev]").addEventListener("click", () => setActive(activeIndex - 1));
+        carousel.querySelector("[data-carousel-next]").addEventListener("click", () => setActive(activeIndex + 1));
+        carousel.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft") setActive(activeIndex - 1);
+          if (event.key === "ArrowRight") setActive(activeIndex + 1);
+        });
+        setActive(0);
+      });
+    </script>
+  </body>
+</html>
